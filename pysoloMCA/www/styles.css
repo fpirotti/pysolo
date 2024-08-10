@@ -1,0 +1,13 @@
+.leaflet .legend {
+  line-height: 18px;
+  color: #555;
+    max-width: 200px;
+  overflow: scroll;
+  max-height: 300px;
+}
+
+#corinemask > div {
+    overflow-y:  scroll;
+    max-height: 450px;
+}
+

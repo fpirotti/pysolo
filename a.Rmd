@@ -1,0 +1,29 @@
+---
+title: "Troubleshooting RMarkdown to PDF"
+author: "Scott Jackson <br/> Frustrated RMarkdown Learner"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output: 
+  pdf_document:
+    keep_md: true
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(kableExtra)   # If you comment out this line, the PDF will render; as-is though, it never completes the render.
+library(tidyverse)
+
+knitr::opts_chunk$set(echo = FALSE)
+options(knitr.table.format = "latex")
+```
+
+## A Simple Test
+Running this next chuck works when run interactively, but not when knit to a PDF.
+
+```{r test}
+mtcars[1:5, 1:4] %>% 
+  kable(col.names =c("MPG", "# Cyl", "Displacement", "Horsepower"),
+        caption = "mtcars example")  %>% 
+  kable_styling(font_size = 12)
+```

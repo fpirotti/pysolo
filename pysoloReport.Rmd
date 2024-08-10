@@ -1,0 +1,426 @@
+---
+title: "PYSOLO Earth Observation Derived STATS"
+subtitle: "project isdddd"
+author: "Erico Kutchartt"
+date: "`r Sys.Date()`"
+
+output: 
+  pdf_document:
+    fig_caption: yes
+    latex_engine: xelatex
+    toc: true
+    toc_depth: 3
+    number_sections: true 
+urlcolor: blue
+documentclass: article 
+classoption: landscape
+geometry: "left=3cm,right=3cm,top=3cm,bottom=3cm"
+#latex_engine: xelatex  
+header-includes:
+- \usepackage{lscape}
+- \usepackage{titling}  
+- \pretitle{\begin{center} \begin{figure}  \centering  \includegraphics[width=.5\textwidth]{"images/logopysolo.png"}    \end{figure} }
+- \posttitle{\end{center}}     
+---
+
+```{r pressure, message=FALSE, warning=FALSE, include=FALSE}
+
+
+
+
+knitr::opts_chunk$set(echo = TRUE)
+library(stringr)
+library(sf)
+library(ggplot2)
+library(tidyverse) 
+library(openxlsx)
+library(kableExtra)
+library(knitr) 
+library(viridis)
+
+normArea = function(x, area, perc = F) {
+  x = x / area
+  if (perc)
+    x = x * 100
+  x
+}
+
+ll <-
+  list.files(path = "data/",
+             pattern = "NUTSstatsAll",
+             full.names = T)
+
+
+nuts <- sf::read_sf(ll[[length(ll)]],
+                    options = "ENCODING=WINDOWS-1252") %>%     
+            dplyr::arrange(NUTS_ID)
+
+nuts$Area_Ha <- as.numeric(sf::st_area(nuts$geometry) / 10000)
+
+nuts$id <- NULL
+
+nuts <-
+  nuts %>% mutate('Subdivisions - NUTS ID' = 
+                    str_trunc(sprintf("%s (%s)",
+                      nuts$NUTS_ID,
+                      nuts$NAME_LATN), 
+                      20, "right", ellipsis = "...") ) %>% 
+  relocate('Subdivisions - NUTS ID')
+
+
+nuts2 <- nuts  %>%
+  mutate_at(vars(contains("_Area")),
+            .funs = list("_%" = ~ normArea(., as.numeric(nuts$Area_Ha), T))) %>%
+  mutate('Biomass_Effective_vs_Potential_%' = Effective_Biomass / Potential_Biomass * 100, 
+         Mean_MCA_Class_x100 = 100* (
+            `MCA_Class1_Area__%`*1 +
+            `MCA_Class2_Area__%`*2 +
+            `MCA_Class3_Area__%`*3 +
+            `MCA_Class4_Area__%`*4 +
+            `MCA_Class5_Area__%`*5)/ 
+            (`MCA_Class1_Area__%` +
+            `MCA_Class2_Area__%` +
+            `MCA_Class3_Area__%` +
+            `MCA_Class4_Area__%` +
+            `MCA_Class5_Area__%`)
+         )
+
+
+ 
+
+
+write.xlsx(
+  sf::st_drop_geometry(nuts2),
+  "NUTS_stats.xlsx",
+  asTable = TRUE,
+  row.names = FALSE,
+  firstActiveRow = 2,
+  colWidths = "auto",
+  withFilter = TRUE
+)
+
+nuts2$LEVL_CODE <-  as.factor(nuts2$LEVL_CODE)
+unique(nuts2$CNTR_CODE)
+
+nuts.nogeom <- sf::st_drop_geometry(nuts2)
+
+
+### FUNCTION TO PRINT tables of interest ------
+printTables <- function(dt, caption, digits=NA, 
+                        linesepww="", 
+                        boldlines=integer(0),
+                        colSizes=integer(0)){
+  
+ 
+  
+  if(is.na(digits)){
+    digits <- rep(0, (ncol(dt)-1))
+  }
+ 
+  
+  kk <-
+    kable(
+      dt,
+      caption = caption,
+      digits = digits,
+      col.names = gsub("_", " ", names(dt)),
+      format = "latex",
+      booktabs = TRUE,
+      align = "lrrrrrrrr",
+      longtable = TRUE,
+      linesep = linesepww,
+      format.args = list(big.mark = " ")
+    ) %>%
+      column_spec(1, width = "11em") %>%
+    kable_paper(latex_options=c( "repeat_header"),  #"scale_down", "hold_position", font_size = 7,
+                html_font = "Arial Narrow", full_width = F) 
+  
+ 
+  if(length(colSizes)>0){
+      kk <- kk   %>% kable_styling()  %>%  
+        column_spec(colSizes[["cols"]], width =colSizes[["widths"]])
+  }  
+  
+  if(length(boldlines)>0){
+      kk <- kk   %>% kable_styling()  %>% row_spec(boldlines,bold=T,hline_after = F)
+  }  
+     
+  kk
+  
+}
+
+### FUNCTION TO PRINT plots of interest ------
+printTablesPerNUTSLevel <- function(nutsCountryAll,level=1){
+  
+  nutsCountry <- nutsCountryAll %>% filter(LEVL_CODE==level ) #  LEVL_CODE==level+1
+  
+  nutsCountryTab1 <- sf::st_drop_geometry(nutsCountry) %>%
+    select(1,Potential_Area,Potential_Biomass,
+                  Effective_Area, Effective_Biomass,
+                  `Effective_Area__%`, 
+           DNI_Minimum, 
+           DNI_Maximum)  %>%
+    rename(DNI_Min=DNI_Minimum, 
+           DNI_Max=DNI_Maximum) %>% 
+    mutate( "DNI_Mean(SD)"= sprintf("%.0f(%.0f)", nutsCountry$DNI_Mean, nutsCountry$DNI_StdDev) )
+  
+  
+  linesepll <- rep('', nrow(nutsCountryTab1))
+ 
+  superClass <- as.integer(as.factor(substr( nutsCountry$NUTS_ID, 1, level+1)))
+ 
+ 
+  if(length(unique(superClass))!=nrow(nutsCountry)){ 
+    ids <- c(1+which(diff(superClass)!=0))-1 
+    message("here")
+    linesepll[ids]<-'\\addlinespace' 
+  }
+  # linesepll[which( nutsCountry$LEVL_CODE==(level+1) )-1]<-'\\addlinespace' 
+
+  # linesepll[which( nutsCountry$LEVL_CODE==level )-1]<-'\\pagebreak' 
+  # linesepBOLD <-  which( (nutsCountry$LEVL_CODE)==level ) 
+  
+  captT1 <- paste("NUTS level ",level," - Potential vs Effective Area (ha) and Biomass (Mg)")
+  
+  kk<-printTables(nutsCountryTab1, captT1, 
+                  digits=NA,  
+                  linesepww = linesepll,
+                  # boldlines=linesepBOLD, 
+                  colSizes=list(cols=6:9,
+                                widths=rep("4em", 4 ) ))
+  
+  
+  cat("\n\n")
+  cat("### ", captT1,   " \n\n")
+  print(kk)
+  
+  cat("\\pagebreak\n")
+  
+ 
+
+  nutsCountryTab2 <- sf::st_drop_geometry(nutsCountry) %>%
+  select(1, MCA_Class1_Area,
+MCA_Class2_Area,
+MCA_Class3_Area,
+MCA_Class4_Area,
+MCA_Class5_Area, Mean_MCA_Class_x100)
+    names(nutsCountryTab2) <- c("Subdivisions - NUTS ID", 
+                            "Poor", "Acceptable", "Medium", 'Very good', "Excellent", "Mean Class x100")
+    
+  captT2 <- "Effective Area per MCA Suitability Classes (ha)"
+  captT2 <- paste("NUTS level ",level," - ", captT2)
+    
+  kk<-printTables(nutsCountryTab2, captT2, 
+                  digits=NA,  
+                  linesepww = linesepll
+                  # ,boldlines=linesepBOLD
+                  )
+   
+  cat("\n\n")
+  cat("### ", captT2,   " \n")
+  cat("\n\n")
+  print(kk)
+  cat("\n")
+     
+  
+  nutsCountryTab3 <- sf::st_drop_geometry(nutsCountry) %>%
+  transmute("Subdivisions - NUTS ID"=`Subdivisions - NUTS ID`, 
+            Poor = MCA_Class1_Biomass,
+Acceptable=MCA_Class2_Biomass,
+Medium=MCA_Class3_Biomass,
+'Very good'=MCA_Class4_Biomass,
+"Excellent"= MCA_Class5_Biomass) 
+  
+  captT3 <- "Total biomass per MCA Suitability Classes in Effective Areas (Mg)"
+    captT3 <- paste("NUTS level ",level," - ", captT3)
+  
+  kk<-printTables(nutsCountryTab3, captT3, 
+                  digits=NA,  
+                  linesepww = linesepll
+                  # ,boldlines=linesepBOLD
+                  )
+   
+
+  cat("\n\n")
+  cat("### ", captT3,   " \n")
+  cat("\n\n")
+  print(kk)
+  cat("\n")
+  
+}
+
+```
+ 
+
+
+```{r tables, echo=FALSE, fig.width=10, message=FALSE, warning=FALSE, results="asis"}
+ 
+ 
+countriesCODE <- unique(nuts$CNTR_CODE)
+
+countriesNAME <- nuts$NAME_LATN[nuts$NUTS_ID %in% countriesCODE ]
+names(countriesCODE) <- countriesNAME
+
+for(country in  countriesNAME){
+  
+  cat("\\pagebreak\n\n")
+  cat("\n# ", country, "\n\n")
+  
+  nutsCountry <- nuts2 %>% 
+    filter( 
+      grepl(sprintf("^%s", countriesCODE[[country]]) , NUTS_ID) 
+      )
+
+  
+  cat("\n## Tables NUTS Level 1 - ", country, "\n\n")
+  
+  printTablesPerNUTSLevel(nutsCountry, 1)
+  
+  cat("\n## Plots Level 1 - ", country, "\n\n")
+  
+    nuts2plot <- sf::st_drop_geometry(nutsCountry) %>% 
+    filter(LEVL_CODE==1) %>% 
+      transmute(`Subdivisions - NUTS ID`,
+               AreaEffvsPot = 1-Effective_Area/Potential_Area,
+               BiomassEffvsPot = 1-Effective_Biomass/Potential_Biomass  ) %>%  
+    pivot_longer(cols = c(AreaEffvsPot,BiomassEffvsPot))
+  
+  nuts2plot$Type <- factor(nuts2plot$name, levels=c("AreaEffvsPot", "BiomassEffvsPot") )
+  
+  gg <- ggplot(nuts2plot, aes(x=`Subdivisions - NUTS ID`, y=value, fill=Type) ) +
+    geom_col(position = "dodge") + theme_classic() + ggtitle(sprintf("1 - Effective/Potential Area and Biomass - %s", country)) + ylab("Ratio of effective over potential (1- ratio) ") + viridis::scale_fill_viridis(discrete = T) +
+    scale_x_discrete(guide = guide_axis(n.dodge = 2))  
+  print(gg) 
+  
+  
+  cat("\n\n")
+  
+  
+  cat("\\pagebreak\n")
+  
+  cat("\n\n")
+  
+  
+  nuts2plot <- sf::st_drop_geometry(nutsCountry) %>% 
+    filter(LEVL_CODE==1) %>% 
+    select(`Subdivisions - NUTS ID`, 
+           Potential_Biomass,Effective_Biomass  ) %>%  
+    pivot_longer(cols = c(Potential_Biomass,Effective_Biomass))
+  
+  nuts2plot$Type <- factor(nuts2plot$name, levels=c("Potential_Biomass", "Effective_Biomass") )
+  
+  gg <- ggplot(nuts2plot, aes(x=`Subdivisions - NUTS ID`, y=value/1000, fill=Type) ) +
+    geom_col(position = "dodge") + theme_classic() + 
+    ggtitle(sprintf("Potential vs. Effective Total Biomass (Mg) x1000 - %s", country)) + 
+    ylab("Biomass (Mg) x1000") + 
+    viridis::scale_fill_viridis(discrete = T) +
+    scale_x_discrete(guide = guide_axis(n.dodge = 2))  
+  print(gg) 
+  
+  
+  cat("\n\n")
+  
+  cat("\\pagebreak\n")
+  
+  
+  nuts2plot <- sf::st_drop_geometry(nutsCountry) %>% 
+    filter(LEVL_CODE==1) 
+  nuts2plot <- nuts2plot %>% select(`Subdivisions - NUTS ID`,
+                                    MCA_Class1_Area,
+                                    MCA_Class2_Area,
+                                    MCA_Class3_Area,
+                                    MCA_Class4_Area,
+                                    MCA_Class5_Area
+  ) %>%  
+    pivot_longer(cols = c(MCA_Class1_Area,
+                          MCA_Class2_Area,
+                          MCA_Class3_Area,
+                          MCA_Class4_Area,
+                          MCA_Class5_Area))
+  
+  levelNames = c("Poor", "Acceptable", "Medium", 'Very good', "Excellent")
+  nuts2plot$Class <- as.integer(factor(nuts2plot$name) )
+  nuts2plot$Class <- factor( levelNames[nuts2plot$Class], rev(c("Poor", "Acceptable", "Medium", 'Very good', "Excellent")) )
+  
+  gg <- ggplot(nuts2plot, aes(x=`Subdivisions - NUTS ID`, y=value/1000, fill=Class) ) +
+    geom_col(position = "stack") + 
+    theme_classic() + 
+    ggtitle(sprintf("Per Class Total Area (ha) x1000 - %s",  country)) + 
+    ylab("Area (ha) x1000") + viridis::scale_fill_viridis(discrete = T, direction = -1) +
+    scale_x_discrete(guide = guide_axis(n.dodge = 2))  
+  
+  print(gg)  
+  
+  
+  cat("\n\n")
+  
+  
+  cat("\n## Tables NUTS Level 2 -  ", country, "\n\n")
+  
+  printTablesPerNUTSLevel(nutsCountry,2)
+   
+  nutsCountryPlot <-  nutsCountry  %>% 
+                    filter(LEVL_CODE==3) %>%
+                    group_split(substr(NUTS_ID,1,3))
+  
+  names(nutsCountryPlot) <- nutsCountry  %>% 
+                    filter(LEVL_CODE==1) %>% pull(NAME_LATN)
+ 
+  # nutsCountryPlotAggr <- nutsCountryPlot %>%   bind_rows(.id = "Region") %>%  
+  #                           arrange(Effective_DNI_50Perc)
+  
+   for(n in names(nutsCountryPlot)){
+     
+     
+      x<-nutsCountryPlot[[n]] %>% arrange(Effective_DNI_50Perc)
+      pp<- ggplot(x, aes(x=`Subdivisions - NUTS ID`)) +
+              geom_crossbar(aes(ymin = Effective_DNI_10Perc, y=Effective_DNI_50Perc,
+                      ymax = Effective_DNI_90Perc), #size = .5, width = 0.5
+                    ) +
+        
+      geom_linerange(aes(ymin = Effective_DNI_01Perc, 
+                      ymax = Effective_DNI_99Perc),  color="red" #size = .5, width = 0.5
+                    ) +
+      geom_errorbar(aes(ymin = Effective_DNI_05Perc, 
+                      ymax = Effective_DNI_95Perc), #size = .5, width = 0.5
+                    ) +
+    geom_point(aes(y=DNI_Mean), size = .5) + 
+      ggtitle( sprintf("Effective DNI Distribution: %s - %s",country, n) ) + 
+        xlab("Provinces") +
+        ylab("Effective DNI (kWh/m2/year)") +
+        theme_bw() +
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    scale_x_discrete()  
+      #guide = guide_axis(n.dodge = 2)
+  
+    print(pp)
+      
+    cat("\\pagebreak\n")
+     
+   }
+
+ 
+  cat("\\pagebreak\n")
+  
+  for(n in names(nutsCountryPlot)){
+    
+     cat("\\pagebreak\n")
+     cat("\n\n")
+     
+     x<-nutsCountryPlot[[n]] 
+     pp<-plot(x[,"DNI_Mean"], main=sprintf("Mean DNI: %s - %s",country, n)) 
+     print(pp)
+     
+     cat("\\pagebreak\n\n")
+     gg<-plot(x[,"Mean_MCA_Class_x100"], main=sprintf("Mean MCA Class x100: %s - %s", country, n)) 
+     print(gg)
+     
+  }
+   
+  cat("\n\n")
+  cat("\\pagebreak\n")
+  
+}
+ 
+
+```

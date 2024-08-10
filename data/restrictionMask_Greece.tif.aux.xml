@@ -1,0 +1,74 @@
+<PAMDataset>
+  <PAMRasterBand band="1">
+    <Description>corine</Description>
+    <Histograms>
+      <HistItem>
+        <HistMin>-0.25</HistMin>
+        <HistMax>1.25</HistMax>
+        <BucketCount>2</BucketCount>
+        <IncludeOutOfRange>0</IncludeOutOfRange>
+        <Approximate>1</Approximate>
+        <HistCounts>2357045|144843</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="STATISTICS_APPROXIMATE">YES</MDI>
+      <MDI key="STATISTICS_MAXIMUM">1</MDI>
+      <MDI key="STATISTICS_MEAN">0.057893478844776</MDI>
+      <MDI key="STATISTICS_MINIMUM">0</MDI>
+      <MDI key="STATISTICS_STDDEV">0.23354191048295</MDI>
+      <MDI key="STATISTICS_VALID_PERCENT">100</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="2">
+    <Description>elevation</Description>
+    <Histograms>
+      <HistItem>
+        <HistMin>-0.25</HistMin>
+        <HistMax>1.25</HistMax>
+        <BucketCount>2</BucketCount>
+        <IncludeOutOfRange>0</IncludeOutOfRange>
+        <Approximate>1</Approximate>
+        <HistCounts>2246774|255114</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="STATISTICS_APPROXIMATE">YES</MDI>
+      <MDI key="STATISTICS_MAXIMUM">1</MDI>
+      <MDI key="STATISTICS_MEAN">0.10196859331833</MDI>
+      <MDI key="STATISTICS_MINIMUM">0</MDI>
+      <MDI key="STATISTICS_STDDEV">0.30260700470248</MDI>
+      <MDI key="STATISTICS_VALID_PERCENT">100</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="3">
+    <Description>treeSpecies</Description>
+    <Histograms>
+      <HistItem>
+        <HistMin>-0.25</HistMin>
+        <HistMax>1.25</HistMax>
+        <BucketCount>2</BucketCount>
+        <IncludeOutOfRange>0</IncludeOutOfRange>
+        <Approximate>1</Approximate>
+        <HistCounts>2251270|250618</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="STATISTICS_APPROXIMATE">YES</MDI>
+      <MDI key="STATISTICS_MAXIMUM">1</MDI>
+      <MDI key="STATISTICS_MEAN">0.1001715504451</MDI>
+      <MDI key="STATISTICS_MINIMUM">0</MDI>
+      <MDI key="STATISTICS_STDDEV">0.30022859778264</MDI>
+      <MDI key="STATISTICS_VALID_PERCENT">100</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="4">
+    <Description>slope</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="5">
+    <Description>forestcover</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="6">
+    <Description>soilType</Description>
+  </PAMRasterBand>
+</PAMDataset>

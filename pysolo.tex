@@ -1,0 +1,314 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  a4paper]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={pysolo},
+  pdfauthor={Francesco Pirotti},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{pysolo}
+\author{Francesco Pirotti}
+\date{2024-07-27}
+
+\begin{document}
+\maketitle
+
+\begin{table}
+
+\caption{\label{tab:table 1}Potential/Effective Total Area (ha) and Biomass (Mg): Elláda}
+\centering
+\begin{tabular}[t]{lrrrrrrrr}
+\toprule
+Subdivisions - NUTS 1 & Potential\_Area & Potential\_Biomass & Effective\_Area & Effective\_Biomass & DNI\_Minimum & DNI\_Mean & DNI\_Maximum & DNI\_StdDev\\
+\midrule
+EL3 (Attiki) & 191 187 & 2 522 548 & 24 086 & 1 125 455 & 1 234 & 1 745 & 1 898 & 66.36\\
+EL4 (Nisia Aigaiou, Kriti) & 1 012 163 & 5 906 429 & 72 499 & 2 827 745 & 803 & 1 833 & 2 190 & 110.72\\
+EL5 (Voreia Elláda) & 2 810 778 & 131 114 116 & 1 086 493 & 101 302 093 & 460 & 1 515 & 1 814 & 100.65\\
+EL6 (Kentriki Elláda) & 3 352 927 & 105 758 260 & 911 720 & 69 684 609 & 356 & 1 629 & 1 927 & 129.20\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}
+
+\caption{\label{tab:table 1}Potential/Effective Area (ha) as percent of NUTS Area and Biomass percentage Effective over Potential: Elláda}
+\centering
+\begin{tabular}[t]{lrrr}
+\toprule
+Subdivisions - NUTS 1 & Potential\_Area\_\_\% & Effective\_Area\_\_\% & EffectiveOverPotential\\
+\midrule
+EL3 (Attiki) & 50 & 6 & 13\\
+EL4 (Nisia Aigaiou, Kriti) & 58 & 4 & 7\\
+EL5 (Voreia Elláda) & 54 & 21 & 39\\
+EL6 (Kentriki Elláda) & 57 & 16 & 27\\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{table}
+
+\caption{\label{tab:table 1}MCA Total Area: Elláda}
+\centering
+\begin{tabular}[t]{lrrrrr}
+\toprule
+Subdivisions - NUTS 1 & Poor & Acceptable & Medium & Very good & Excellent\\
+\midrule
+EL3 (Attiki) & 0 & 24 111 & 81 & 0 & 0\\
+EL4 (Nisia Aigaiou, Kriti) & 0 & 71 372 & 1 136 & 0 & 0\\
+EL5 (Voreia Elláda) & 78 & 725 879 & 324 452 & 36 938 & 0\\
+EL6 (Kentriki Elláda) & 32 & 696 553 & 216 136 & 0 & 0\\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{table}
+
+\caption{\label{tab:table 1}MCA Quality (percent of total Area): Elláda}
+\centering
+\begin{tabular}[t]{lrrrrr}
+\toprule
+Subdivisions - NUTS 1 & Poor & Acceptable & Medium & Very good & Excellent\\
+\midrule
+EL3 (Attiki) & 0 & 6 & 0 & 0 & 0\\
+EL4 (Nisia Aigaiou, Kriti) & 0 & 4 & 0 & 0 & 0\\
+EL5 (Voreia Elláda) & 0 & 14 & 6 & 1 & 0\\
+EL6 (Kentriki Elláda) & 0 & 12 & 4 & 0 & 0\\
+\bottomrule
+\end{tabular}
+\end{table}
+\pagebreak
+
+\includegraphics{pysolo_files/figure-latex/table 1-1.pdf} \pagebreak
+\includegraphics{pysolo_files/figure-latex/table 1-2.pdf} \pagebreak
+\includegraphics{pysolo_files/figure-latex/table 1-3.pdf} \pagebreak
+\includegraphics{pysolo_files/figure-latex/table 1-4.pdf} \pagebreak
+
+\begin{table}
+
+\caption{\label{tab:table 1}Potential/Effective Total Area (ha) and Biomass (Mg): España}
+\centering
+\begin{tabular}[t]{lrrrrrrrr}
+\toprule
+Subdivisions - NUTS 1 & Potential\_Area & Potential\_Biomass & Effective\_Area & Effective\_Biomass & DNI\_Minimum & DNI\_Mean & DNI\_Maximum & DNI\_StdDev\\
+\midrule
+ES1 (Noroeste) & 3 086 950 & 210 519 602 & 1 105 843 & 130 767 036 & 344 & 1 302 & 1 891 & 214.47\\
+ES2 (Noreste) & 3 856 091 & 155 515 715 & 1 166 511 & 117 117 552 & 442 & 1 726 & 2 091 & 281.22\\
+ES3 (Comunidad de Madrid) & 404 959 & 4 204 337 & 60 180 & 3 421 208 & 1 380 & 2 007 & 2 117 & 90.92\\
+ES4 (Centro (ES)) & 10 947 832 & 140 834 037 & 1 694 883 & 97 788 205 & 460 & 1 970 & 2 190 & 161.49\\
+ES5 (Este) & 3 416 216 & 110 972 255 & 924 590 & 76 607 577 & 449 & 1 790 & 2 099 & 144.08\\
+\addlinespace
+ES6 (Sur) & 4 689 001 & 42 921 598 & 484 676 & 24 543 768 & 945 & 2 064 & 2 431 & 96.15\\
+ES7 (Canarias) & 543 811 & 3 548 960 & 27 275 & 1 691 190 & 745 & 1 819 & 3 048 & 280.58\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}
+
+\caption{\label{tab:table 1}Potential/Effective Area (ha) as percent of NUTS Area and Biomass percentage Effective over Potential: España}
+\centering
+\begin{tabular}[t]{lrrr}
+\toprule
+Subdivisions - NUTS 1 & Potential\_Area\_\_\% & Effective\_Area\_\_\% & EffectiveOverPotential\\
+\midrule
+ES1 (Noroeste) & 68 & 24 & 36\\
+ES2 (Noreste) & 55 & 17 & 30\\
+ES3 (Comunidad de Madrid) & 50 & 8 & 15\\
+ES4 (Centro (ES)) & 51 & 8 & 15\\
+ES5 (Este) & 57 & 15 & 27\\
+\addlinespace
+ES6 (Sur) & 47 & 5 & 10\\
+ES7 (Canarias) & 73 & 4 & 5\\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{table}
+
+\caption{\label{tab:table 1}MCA Total Area: España}
+\centering
+\begin{tabular}[t]{lrrrrr}
+\toprule
+Subdivisions - NUTS 1 & Poor & Acceptable & Medium & Very good & Excellent\\
+\midrule
+ES1 (Noroeste) & 69 & 164 456 & 671 632 & 258 872 & 11 950\\
+ES2 (Noreste) & 338 & 517 802 & 577 010 & 73 408 & 0\\
+ES3 (Comunidad de Madrid) & 2 & 56 353 & 4 264 & 0 & 0\\
+ES4 (Centro (ES)) & 4 107 & 1 500 802 & 193 363 & 0 & 0\\
+ES5 (Este) & 3 429 & 616 613 & 304 935 & 37 & 0\\
+\addlinespace
+ES6 (Sur) & 110 & 464 852 & 19 798 & 0 & 0\\
+ES7 (Canarias) & 0 & 0 & 0 & 0 & 0\\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{table}
+
+\caption{\label{tab:table 1}MCA Quality (percent of total Area): España}
+\centering
+\begin{tabular}[t]{lrrrrr}
+\toprule
+Subdivisions - NUTS 1 & Poor & Acceptable & Medium & Very good & Excellent\\
+\midrule
+ES1 (Noroeste) & 0 & 4 & 15 & 6 & 0\\
+ES2 (Noreste) & 0 & 7 & 8 & 1 & 0\\
+ES3 (Comunidad de Madrid) & 0 & 7 & 1 & 0 & 0\\
+ES4 (Centro (ES)) & 0 & 7 & 1 & 0 & 0\\
+ES5 (Este) & 0 & 10 & 5 & 0 & 0\\
+\addlinespace
+ES6 (Sur) & 0 & 5 & 0 & 0 & 0\\
+ES7 (Canarias) & 0 & 0 & 0 & 0 & 0\\
+\bottomrule
+\end{tabular}
+\end{table}
+\pagebreak
+
+\includegraphics{pysolo_files/figure-latex/table 1-5.pdf} \pagebreak
+\includegraphics{pysolo_files/figure-latex/table 1-6.pdf} \pagebreak
+\includegraphics{pysolo_files/figure-latex/table 1-7.pdf} \pagebreak
+\includegraphics{pysolo_files/figure-latex/table 1-8.pdf} \pagebreak
+
+\begin{table}
+
+\caption{\label{tab:table 1}Potential/Effective Total Area (ha) and Biomass (Mg): Italia}
+\centering
+\begin{tabular}[t]{lrrrrrrrr}
+\toprule
+Subdivisions - NUTS 1 & Potential\_Area & Potential\_Biomass & Effective\_Area & Effective\_Biomass & DNI\_Minimum & DNI\_Mean & DNI\_Maximum & DNI\_StdDev\\
+\midrule
+ITC (Nord-Ovest) & 2 910 630 & 244 655 729 & 1 039 208 & 134 148 886 & 156 & 1 386 & 1 913 & 166.34\\
+ITF (Sud) & 2 602 179 & 178 528 386 & 1 288 590 & 140 640 247 & 297 & 1 588 & 1 854 & 107.59\\
+ITG (Isole) & 2 021 806 & 42 254 405 & 610 762 & 31 249 199 & 496 & 1 733 & 1 956 & 100.83\\
+ITH (Nord-Est) & 2 659 164 & 304 907 317 & 1 074 126 & 177 630 714 & 6 & 1 338 & 1 752 & 176.07\\
+ITI (Centro (IT)) & 2 403 504 & 176 854 964 & 1 334 061 & 134 849 713 & 260 & 1 533 & 1 774 & 121.76\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}
+
+\caption{\label{tab:table 1}Potential/Effective Area (ha) as percent of NUTS Area and Biomass percentage Effective over Potential: Italia}
+\centering
+\begin{tabular}[t]{lrrr}
+\toprule
+Subdivisions - NUTS 1 & Potential\_Area\_\_\% & Effective\_Area\_\_\% & EffectiveOverPotential\\
+\midrule
+ITC (Nord-Ovest) & 50 & 18 & 36\\
+ITF (Sud) & 36 & 18 & 50\\
+ITG (Isole) & 41 & 12 & 30\\
+ITH (Nord-Est) & 43 & 18 & 40\\
+ITI (Centro (IT)) & 41 & 23 & 56\\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{table}
+
+\caption{\label{tab:table 1}MCA Total Area: Italia}
+\centering
+\begin{tabular}[t]{lrrrrr}
+\toprule
+Subdivisions - NUTS 1 & Poor & Acceptable & Medium & Very good & Excellent\\
+\midrule
+ITC (Nord-Ovest) & 566 & 482 265 & 489 091 & 68 041 & 20\\
+ITF (Sud) & 206 & 659 122 & 535 155 & 94 874 & 0\\
+ITG (Isole) & 2 471 & 545 675 & 62 618 & 0 & 0\\
+ITH (Nord-Est) & 59 & 303 131 & 446 853 & 326 244 & 2\\
+ITI (Centro (IT)) & 7 105 & 888 727 & 440 238 & 114 & 0\\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{table}
+
+\caption{\label{tab:table 1}MCA Quality (percent of total Area): Italia}
+\centering
+\begin{tabular}[t]{lrrrrr}
+\toprule
+Subdivisions - NUTS 1 & Poor & Acceptable & Medium & Very good & Excellent\\
+\midrule
+ITC (Nord-Ovest) & 0 & 8 & 8 & 1 & 0\\
+ITF (Sud) & 0 & 9 & 7 & 1 & 0\\
+ITG (Isole) & 0 & 11 & 1 & 0 & 0\\
+ITH (Nord-Est) & 0 & 5 & 7 & 5 & 0\\
+ITI (Centro (IT)) & 0 & 15 & 8 & 0 & 0\\
+\bottomrule
+\end{tabular}
+\end{table}
+\pagebreak
+
+\includegraphics{pysolo_files/figure-latex/table 1-9.pdf} \pagebreak
+\includegraphics{pysolo_files/figure-latex/table 1-10.pdf} \pagebreak
+\includegraphics{pysolo_files/figure-latex/table 1-11.pdf} \pagebreak
+\includegraphics{pysolo_files/figure-latex/table 1-12.pdf} \pagebreak
+\includegraphics{pysolo_files/figure-latex/table 1-13.pdf}
+
+\end{document}
