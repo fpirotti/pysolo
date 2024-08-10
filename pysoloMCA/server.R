@@ -2,9 +2,7 @@
 # Define server logic required to draw a histogram
 function(input, output, session) {
 
-  restrictionsMasks <- list(
-
-  )
+  restrictionsMasks <- global.restrictionMasks
 
   observeEvent(input$corineapply, {
     print(restrictionsMasks)
@@ -72,15 +70,39 @@ function(input, output, session) {
       mvcorine@map
     })
 
+  ### SOIL -------
+  output$map.soils <- renderLeaflet({
+
+    soilmasked <- soil
+    soilmasked2 <- soil
+    soilno <- input$soilmask
+    excl<-(soil[] %in%  soilno)
+    soilmasked[excl] <- NA
+    soilmasked2[!excl] <- NA
+
+    restrictionsMasks[["soils"]]<<- soilmasked2
+    mvcorine <- mv +
+      mapview::mapview(soilmasked2, layer.name= "SOILS Included",
+                       col.regions = COR_colors,
+                       na.color ="#00000000",
+                       legend=F,query.digits = 0  )+
+      mapview::mapview(soilmasked, layer.name= "SOILS Excluded",
+                       col.regions = COR_colors,
+                       na.color ="#00000000", hide=T,
+                       legend=F,query.digits = 0  )
+    mvcorine@map
+  })
+
 
   ### CANOPY COVER -------
   output$map.cc <- renderLeaflet({
 
     ccmasked <- cc
     ccmasked[cc[]< input$rest.cc.thr ]<-NA
-    restrictionsMasks[["canopycover"]]<<- ccmasked
+    restrictionsMasks[["canopy"]]<<- ccmasked
     mvcc <- mv + mapview::mapview(ccmasked, layer.name= "Canopy Cover",
                                   legend=T,query.digits = 0,
+                                  na.color ="#00000000",
                                   # col.regions =  viridis::viridis(100),
                                   at = seq(0, 100, 10)  )
 
@@ -190,8 +212,9 @@ function(input, output, session) {
   },  res = 90)
   ### WEIGHTS -------
   output$weights.out <- renderPrint({
-    diff(input$weights.slider)
-    input$weights.slider
+    print(restrictionsMasks)
+
+    paste( input$weights.slider,     diff(input$weights.slider))
   }   )
 
 

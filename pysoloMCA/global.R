@@ -210,7 +210,7 @@ selectedCorine <- which(info$corineInfo$landcover_class_values > 243 &
 mvcorine <- mv + mapview::mapview(COR, layer.name= "CORINE",
                            col.regions = COR_colors, legend=FALSE )
 
-
+ccmask <- 50
 cc <-   raster::raster(file.path("data/PYSOLO_restrictions",
                  paste(sep="", info$restrictions$Forest_Cover, ".tif")))
 
@@ -233,6 +233,12 @@ dni[dni[]==0]<-NA
 soil <-  raster::raster( file.path("data/PYSOLO_restrictions",
                                   paste(sep="", info$restrictions$SOIL, ".tif")) )
 soil[soil[]==0]<-NA
+soil <- raster::ratify( soil )
+
+rat<-data.frame(ID=unique(soil[]),
+                soil=unique(soil[]) )
+
+levels(soil)<- rat
 
 
 Road_Proximity <-  raster::raster( file.path("data/PYSOLO_Criteria",
@@ -243,4 +249,28 @@ Biomass <-  raster::raster( file.path("data/PYSOLO_Criteria",
                                              paste(sep="", info$mca$Biomass, ".tif")) )
 Biomass[Road_Proximity[]==0]<-NA
 
-###
+### global masks
+CORmIncluded<- COR
+excl<-(COR[] %in%  info$corineInfo$landcover_class_values[selectedCorine])
+CORmIncluded[ !excl ]<-NA
+ccmasked <- cc
+ccmasked[cc[]< ccmask ]<-NA
+
+
+mults <- raster::stackApply(tree, indices = c(1), sum)
+mults2 <- raster::stackApply(as.logical(tree), indices = c(1), sum)
+fin <- mults/mults2
+fin[fin[]<1] <- NA
+
+soilmasked <- soil
+soilno <- c( 8 , 12,14,16,21)
+excl<-(soil[] %in%  soilno)
+soilmasked[excl] <- NA
+
+global.restrictionMasks <- list(
+  corine = CORmIncluded,
+  trees = fin,
+  canopy = ccmasked,
+  soils =soilmasked
+
+)

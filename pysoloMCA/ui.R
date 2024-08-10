@@ -115,7 +115,20 @@ dashboardPage(skin = "black",
 
                   ),
                   tabItem(  tabName = "soils",
-                            h2("TO DO")
+                            fluidRow(
+                              column(8, shinycssloaders::withSpinner(
+                                leafletOutput("map.soils",height = 500),type = 4,caption = "drawing map ",
+                                id = "soilmapSpin", hide.ui = F ) )
+                              ,column(4,
+                                      actionButton("soilapply", "Apply mask"),
+                                      checkboxGroupInput("soilmask", "Select soil code to include"
+                                                         # choices =  info$corineInfo$landcover_class_values
+                                                         ,choiceNames =  sort(unique(soil[]))
+                                                         ,choiceValues = sort(unique(soil[]))
+                                                         ,selected =  setdiff(sort(unique(soil[])), soilno)
+                                      )
+                              )
+                            )
 
                   ),
                   tabItem(tabName = "trees",
